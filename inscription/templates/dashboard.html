@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de bord - Gestion Inscriptions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* Couleur d'accentuation principale (Violet/Bleu profond) */
+        :root {
+            --gest-primary: #5c67f2; /* Exemple de bleu vif */
+            --gest-success: #28a745;
+            --gest-info: #17a2b8;
+        }
+
+        /* Couleur de fond de la page */
+        body {
+            background-color: #f8f9fa; /* Gris très clair */
+        }
+
+        /* Personnalisation de la barre de navigation */
+        .navbar-custom {
+            background-color: var(--gest-primary);
+            color: white;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+
+        /* Personnalisation des Cartes (Cards) pour qu'elles soient colorées */
+        .card-gest {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.2s; /* Petit effet au survol */
+        }
+        .card-gest:hover {
+            transform: scale(1.03);
+        }
+
+        /* Cartes Spécifiques */
+        .card-tuteur {
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%); /* Vert dégradé */
+            color: white;
+        }
+        .card-eleve {
+            background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%); /* Bleu clair dégradé */
+            color: white;
+        }
+        .card-inscription {
+            background: linear-gradient(135deg, #e6d70b 0%, #c4c9cd 100%); /* Gris dégradé doux */
+            color: #333;
+        }
+        
+        /* Ajustement des boutons à l'intérieur des cartes */
+        .card-gest .btn {
+            border-radius: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom px-4 shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="#">GESTION INSCRIPTIONS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item me-3">
+                        <span class="nav-link disabled">Bienvenue, <strong>{{ request.user.username }}</strong></span>
+                    </li>
+                    <li class="nav-item me-2">
+                        <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#helpModal">Aide</button>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'logout' %}" class="btn btn-danger btn-sm text-white px-3">Déconnexion</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="text-center mb-4">
+            <h1 class="mb-2 fw-bold" style="color: var(--gest-primary);">Tableau de Bord</h1>
+            <p class="text-muted fs-6">Vue d'ensemble professionnelle et artistique de la gestion des inscriptions</p>
+        </div>
+
+        <div class="row gx-4 gy-3 justify-content-center mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="card p-3 shadow-sm h-100 border-0" style="border-radius:12px; background: linear-gradient(135deg,#ffd89b 0%, #19547b 100%); color:white;">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3" style="font-size:32px;">👨‍👩‍👦</div>
+                        <div>
+                            <div class="text-uppercase small">Élèves</div>
+                            <div class="fs-3 fw-bold">{{ stats.eleves_count }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="card p-3 shadow-sm h-100 border-0" style="border-radius:12px; background: linear-gradient(135deg,#c1ffd7 0%, #1b8a6b 100%); color:#063">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3" style="font-size:32px;">👪</div>
+                        <div>
+                            <div class="text-uppercase small">Tuteurs</div>
+                            <div class="fs-3 fw-bold">{{ stats.tuteurs_count }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="card p-3 shadow-sm h-100 border-0" style="border-radius:12px; background: linear-gradient(135deg,#e0c3fc 0%, #8ec5fc 100%); color:#034">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3" style="font-size:32px;">📝</div>
+                        <div>
+                            <div class="text-uppercase small">Inscriptions</div>
+                            <div class="fs-3 fw-bold">{{ stats.inscriptions_count }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            
+            <div class="col-md-4 col-sm-6">
+                <div class="card card-gest card-tuteur shadow p-4 text-center h-100">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <h4 class="card-title fw-bold mb-3">Tuteurs</h4>
+                        <p class="card-text mb-4">Gérez la liste des parents et tuteurs légaux.</p>
+                        <a href="{% url 'ajouter_tuteur' %}" class="btn btn-light text-success w-100">Ajouter un Tuteur</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="card card-gest card-eleve shadow p-4 text-center h-100">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <h4 class="card-title fw-bold mb-3">Élèves</h4>
+                        <p class="card-text mb-4">Inscrivez et suivez les informations des élèves.</p>
+                        <a href="{% url 'ajouter_eleve' %}" class="btn btn-light text-info w-100">Ajouter un Élève</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="card card-gest card-inscription shadow p-4 text-center h-100">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <h4 class="card-title fw-bold mb-3">Inscriptions</h4>
+                        <p class="card-text mb-4">Enregistrez les nouvelles inscriptions de l'année.</p>
+                        <a href="{% url 'ajouter_inscription' %}" class="btn btn-light w-100" style="background-color: var(--gest-primary); color: white;">Nouvelle Inscription</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row mt-4">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-sm border-0 p-3 mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Inscriptions par mois ({{ now|date:"Y" }})</h5>
+                        <canvas id="inscriptionsChart" height="120"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <h4 class="fw-bold">Dernière inscription</h4>
+                {% if last_inscription %}
+                <div class="card p-3 shadow-sm">
+                    <div class="card-body">
+                        <p class="mb-1"><strong>Num:</strong> {{ last_inscription.numinscription }}</p>
+                        <p class="mb-1"><strong>Élève:</strong> {{ last_inscription.matr_eleve }}</p>
+                        <p class="mb-1"><strong>Classe:</strong> {{ last_inscription.num_classe }}</p>
+                        <p class="mb-1"><strong>Option:</strong> {{ last_inscription.num_option }}</p>
+                        <p class="mb-0 text-muted"><strong>Date:</strong> {{ last_inscription.date_inscr }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted">Aucune inscription trouvée.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h4 class="fw-bold">Actions rapides</h4>
+                <div class="action-card mt-2 shadow-sm" style="border-radius:12px; overflow:hidden;">
+                    <div class="action-image" style="background-image: url('https://images.unsplash.com/photo-1596496051264-6e1f5e1b7b9a?q=80&w=1400'); background-size:cover; background-position:center; height:180px; position:relative;">
+                        <div class="action-overlay" style="position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.5)); display:flex; align-items:flex-end; padding:16px; color:white;">
+                            <div>
+                                <h5 class="mb-1">Gestion rapide</h5>
+                                <p class="small mb-0">Ajoutez un élève, un tuteur ou une inscription en un clic.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-white">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="{% url 'ajouter_eleve' %}" class="btn btn-outline-primary action-btn flex-grow-1" style="min-width:140px;">➕ Ajouter Élève</a>
+                            <a href="{% url 'ajouter_tuteur' %}" class="btn btn-outline-success action-btn flex-grow-1" style="min-width:140px;">➕ Ajouter Tuteur</a>
+                            <a href="{% url 'ajouter_inscription' %}" class="btn btn-primary action-btn flex-grow-1" style="min-width:140px;">📝 Nouvelle Inscription</a>
+                            <a href="#" class="btn btn-light action-btn flex-grow-1" style="min-width:140px;">📥 Importer CSV</a>
+                            <a href="#" class="btn btn-light action-btn flex-grow-1" style="min-width:140px;">📤 Exporter</a>
+                        </div>
+                        <div class="mt-3 small text-muted">Conseil: utilisez l'import CSV pour ajouter rapidement plusieurs élèves.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5 text-center">
+            <div class="col-12">
+                <p class="text-muted small">© 2024 - Logiciel de Gestion Scolaire - Kinshasa</p>
+            </div>
+        </div>
+
+        <!-- Aide Modal -->
+        <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Aide - Tableau de Bord</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Cette page offre une vue d'ensemble des inscriptions et des comptes. Utilisez les boutons « Actions rapides » pour créer de nouvelles entrées.</p>
+                        <ul>
+                            <li><strong>Élèves :</strong> Liste et création d'élèves.</li>
+                            <li><strong>Tuteurs :</strong> Gérer les tuteurs/parents.</li>
+                            <li><strong>Inscriptions :</strong> Enregistrer un élève dans une classe et une option.</li>
+                        </ul>
+                        <p>Le graphique affiche les inscriptions par mois pour l'année en cours. Pour toute assistance supplémentaire, contactez l'administrateur.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Récupération des données depuis le contexte
+        const monthLabels = {{ month_labels_json|safe }};
+        const monthData = {{ month_data_json|safe }};
+
+        const ctx = document.getElementById('inscriptionsChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthLabels,
+                    datasets: [{
+                        label: 'Inscriptions',
+                        data: monthData,
+                        backgroundColor: 'rgba(92,103,242,0.8)',
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { precision:0 } } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+<body style="background: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1920') no-repeat center center fixed; background-size: cover;"></body>
