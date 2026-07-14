@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure--+hg!yn)764*j6ff=@araltn_^fkr8s^7y5p^33jkq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*', 'lotus-github-io.onrender.com']
+ALLOWED_HOSTS = ['*', 'lotus-github-io.onrender.com', 'lotus-service.onrender.com']
 
 print(f"DEBUG IS: {DEBUG}")
 
